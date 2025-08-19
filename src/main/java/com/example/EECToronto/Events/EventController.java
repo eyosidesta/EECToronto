@@ -1,0 +1,38 @@
+package com.example.EECToronto.Events;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@CrossOrigin(origins = "http://localhost:3036")
+@RestController
+@RequestMapping(path="api/events")
+public class EventController {
+    private final EventService eventService;
+    @Autowired
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
+    @GetMapping
+    public List<Events> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Events> getEventById(@PathVariable Long id) {
+        return eventService.getEventById(id);
+    }
+    @PostMapping
+    public void addEvent(@RequestBody Events events){
+        eventService.addEventsService(events);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Events> updateEvent(@PathVariable Long id, @RequestBody Events event) {
+        Events updated = eventService.updateEvent(id, event);
+        return ResponseEntity.ok(updated);
+    }
+}

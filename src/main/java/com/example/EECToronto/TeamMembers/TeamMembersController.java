@@ -21,19 +21,15 @@ public class TeamMembersController {
         return teamMembersService.getAllTeamMembersService();
     }
 
-//    @GetMapping("/get_team_members/team/{team_id}")
-//    public List<Members> getTeamMembers(@PathVariable Long team_id) {
-//        return teamMembersService.getTeamMembersService(team_id);
-//    }
-
     @GetMapping("/get_member_teams/member/{member_id}")
-    public void getMemberTeams(@PathVariable Long member_id) {
-         teamMembersService.getMemberTeamsService(member_id);
+    public List<Teams> getTeamsByMembers(@PathVariable Long member_id) {
+         return teamMembersService.getTeamsByMembersService(member_id);
     }
-//    @GetMapping("/get_team_members/team/{team_id}")
-//    public List<Members> getTeamMembersService(@PathVariable Long team_id) {
-//        return teamMembersService.getTeamMembersService()
-//    }
+
+    @GetMapping("/get_team_members/team/{team_id}")
+    public List<Members> getMembersByTeamssService(@PathVariable Long team_id) {
+        return teamMembersService.getMembersByTeamsService(team_id);
+    }
 
     @PostMapping("/add_member/team/{team_id}/member/{member_id}")
     public void addMemberToTeam(@PathVariable Long team_id, @PathVariable Long member_id) {

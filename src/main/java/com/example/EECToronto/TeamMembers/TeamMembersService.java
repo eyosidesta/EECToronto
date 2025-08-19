@@ -25,11 +25,28 @@ public class TeamMembersService {
         return teamMembersRepository.findAll();
     }
 
-    public void getMemberTeamsService(Long member_id) {
-        Members member = membersRepository.findById(member_id).orElseThrow(() -> new IllegalArgumentException("Invalid Member Id: " + member_id));
-//        List<TeamMembers> team_members = teamMembersRepository.getMemberTeams(member.getId());
-//        System.out.println(team_members.getFirst());
+//    public List<Teams> getTeamsByMemberService(Long member_id) {
+//        Members member = membersRepository.findById(member_id).orElseThrow(() -> new IllegalArgumentException("Invalid Member Id: " + member_id));
+//        return teamMembersRepository.findTeamsByMember(member).
+//                stream()
+//                .map(TeamMembers::getTeam).toList();
+//
+//    }
 
+    public List<Teams> getTeamsByMembersService(Long member_id) {
+        Members members = membersRepository.findById(member_id).orElseThrow(() -> new IllegalArgumentException("Invalid Member Id: " + member_id));
+        return teamMembersRepository.findTeamsByMembers(members).
+                stream().
+                map(TeamMembers::getTeam).
+                toList();
+    }
+
+    public List<Members> getMembersByTeamsService(Long team_id) {
+        Teams teams = teamsRepository.findById(team_id).orElseThrow(() -> new IllegalArgumentException("Invalid Teams Id: " + team_id));
+        return teamMembersRepository.findMembersByTeams(teams)
+                .stream()
+                .map(TeamMembers::getMembers)
+                .toList();
     }
 
 //    public List<Members> getTeamMembersService(Long team_id) {

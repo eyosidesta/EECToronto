@@ -18,6 +18,10 @@ public class TeamSMSController {
     public List<TeamSMS> getAllTeamSMS() {
         return teamSMSService.getAllTeamSMSService();
     }
+    @PostMapping("/send_all")
+    public void sendMessageForAll(@RequestBody String message) {
+        teamSMSService.sendMessageForAll(message);
+    }
 
     @PostMapping
     public void sendTeamSMS(TeamSMS teamSMS, Members members) {
