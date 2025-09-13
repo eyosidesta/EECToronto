@@ -16,17 +16,22 @@ public class EventService {
     public Optional<Events> getEventById(Long id) {
         return eventRepository.findById(id);
     }
+    public List<Events> getEventByType(String event_type) {
+        return eventRepository.findByEventType(event_type);
+    }
     public void addEventsService(Events events) {
         eventRepository.save(events);
     }
     public Events updateEvent(Long id, Events updatedEvent) {
         return eventRepository.findById(id)
                 .map(existingEvent -> {
-                    existingEvent.setEvent_title(updatedEvent.getEvent_title());
-                    existingEvent.setEvent_description(updatedEvent.getEvent_description());
-                    existingEvent.setEvent_imageUrl(updatedEvent.getEvent_imageUrl());
-                    existingEvent.setEvent_place(updatedEvent.getEvent_place());
-                    existingEvent.setEvent_date(updatedEvent.getEvent_date());
+                    existingEvent.setEventTitle(updatedEvent.getEventTitle());
+                    existingEvent.setEventDescription(updatedEvent.getEventDescription());
+                    existingEvent.setEventImageUrl(updatedEvent.getEventImageUrl());
+                    existingEvent.setEventCity(updatedEvent.getEventCity());
+                    existingEvent.setEventStreet(updatedEvent.getEventStreet());
+                    existingEvent.setEventType((updatedEvent.getEventType()));
+                    existingEvent.setEventDate(updatedEvent.getEventDate());
                     return eventRepository.save(existingEvent);
                 }).orElseThrow(() -> new RuntimeException("Event Not Found with id " + id));
     }

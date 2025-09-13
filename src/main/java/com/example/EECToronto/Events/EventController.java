@@ -25,6 +25,12 @@ public class EventController {
     public Optional<Events> getEventById(@PathVariable Long id) {
         return eventService.getEventById(id);
     }
+
+    @GetMapping("/type/{event_type}")
+    public List<Events> getEventByType(@PathVariable String event_type) {
+        return eventService.getEventByType(event_type);
+    }
+
     @PostMapping
     public void addEvent(@RequestBody Events events){
         eventService.addEventsService(events);

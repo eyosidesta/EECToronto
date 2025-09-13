@@ -18,54 +18,83 @@ public class Events {
             generator = "event_sequence"
     )
     private Long id;
-    private String event_title;
-    private String event_imageUrl;
-    private String event_description;
-    private String event_place;
-    private Date event_date;
+    @Column(name = "event_title")
+    private String eventTitle;
+
+    @Column(name = "event_image_url")
+    private String eventImageUrl;
+
+    @Column(name = "event_description")
+    private String eventDescription;
+
+    @Column(name = "event_city")
+    private String eventCity;
+
+    @Column(name = "event_street")
+    private String eventStreet;
+
+    @Column(name = "event_type")
+    private String eventType;
+
+    @Column(name = "event_date")
+    private Date eventDate;
 
     public Events() {}
 
-    public Events (String event_title, String event_description, String event_imageUrl, String event_place, Date event_date) {
-        this.event_title = event_title;
-        this.event_description = event_description;
-        this.event_imageUrl = event_imageUrl;
-        this.event_place = event_place;
-        this.event_date = event_date;
+    public Events (String eventTitle, String eventDescription, String eventImageUrl, String eventStreet, String eventCity, String eventType, Date eventDate) {
+        this.eventTitle = eventTitle;
+        this.eventDescription = eventDescription;
+        this.eventImageUrl = eventImageUrl;
+        this.eventStreet = eventStreet;
+        this.eventCity = eventCity;
+        this.eventType = eventType;
+        this.eventDate = eventDate;
 
     }
 
     public Long getId() {
         return id;
     }
-    public String getEvent_title() {
-        return event_title;
+    public String getEventTitle() {
+        return eventTitle;
     }
-    public void setEvent_title(String event_title) {
-        this.event_title = event_title;
+    public void setEventTitle(String event_title) {
+        this.eventTitle = event_title;
     }
-    public String getEvent_description() {
-        return event_description;
+    public String getEventDescription() {
+        return eventDescription;
     }
-    public void setEvent_description(String event_description) {
-        this.event_description = event_description;
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
     }
-    public String getEvent_place() {
-        return event_place;
+    public String getEventStreet() {
+        return eventStreet;
     }
-    public void setEvent_place(String event_place) {
-        this.event_place = event_place;
+    public void setEventStreet(String eventStreet) {
+        this.eventStreet = eventStreet;
     }
-    public String getEvent_imageUrl() {
-        return event_imageUrl;
+    public String getEventCity() {
+        return eventCity;
     }
-    public void setEvent_imageUrl(String event_imageUrl) {
-        this.event_imageUrl = event_imageUrl;
+    public void setEventCity(String eventCity) {
+        this.eventCity = eventCity;
     }
-    public Date getEvent_date() {
-        return event_date;
+    public String getEventType() {
+        return eventType;
     }
-    public void setEvent_date(Date event_date) {
-        this.event_date = event_date;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+    public String getEventImageUrl() {
+        return eventImageUrl;
+    }
+    public void setEventImageUrl(String eventImageUrl) {
+        this.eventImageUrl = eventImageUrl;
+    }
+    public Date getEventDate() {
+        return eventDate;
+    }
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 }
