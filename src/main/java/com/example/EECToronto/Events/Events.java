@@ -49,7 +49,6 @@ public class Events {
         this.eventCity = eventCity;
         this.eventType = eventType;
         this.eventDate = eventDate;
-
     }
 
     public Long getId() {

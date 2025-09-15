@@ -1,9 +1,11 @@
 package com.example.EECToronto.Events;
 
+import com.example.EECToronto.DTO.EventRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +34,9 @@ public class EventController {
     }
 
     @PostMapping
-    public void addEvent(@RequestBody Events events){
-        eventService.addEventsService(events);
+    public ResponseEntity<Events> addEvent(@ModelAttribute EventRequestDTO eventRequestDTO) throws IOException {
+        Events created = eventService.addEventsService(eventRequestDTO);
+        return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
