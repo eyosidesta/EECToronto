@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://geecvancouver.vercel.app")
 @RequestMapping(path = "api/payment")
 public class PaymentContorller {
 

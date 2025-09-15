@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("http://localhost:3036")
+@CrossOrigin("https://geecvancouver.vercel.app")
 @RestController
 @RequestMapping("api/sermon-group-rship")
 public class SermonGroupRshipController {
