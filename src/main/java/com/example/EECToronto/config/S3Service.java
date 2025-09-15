@@ -25,7 +25,10 @@ public class S3Service {
     private String region;
 
     public S3Service(@Value("${DO_SPACES_ACCESS_KEY}") String accessKey,
-                     @Value("${DO_SPACES_SECRET_KEY}") String secretKey) {
+                     @Value("${DO_SPACES_SECRET_KEY}") String secretKey,
+                     @Value("${DO_SPACES_BUCKET}") String bucketName,
+                     @Value("${DO_SPACES_ENDPOINT}") String endpoint,
+                     @Value("${DO_SPACES_REGION}") String region) {
         AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         this.s3Client = S3Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
@@ -40,8 +43,8 @@ public class S3Service {
                 .key(fileName)
                 .acl("public-read")
                 .build();
-        PutObjectResponse putResponse = s3Client.putObject(putRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(data));
-        return endpoint + "/" + putResponse;
+        s3Client.putObject(putRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(data));
+        return endpoint + "/" + bucketName + "/" + fileName;
     }
 
 }
