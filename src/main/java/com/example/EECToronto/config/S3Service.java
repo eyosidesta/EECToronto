@@ -10,9 +10,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.UUID;
 
 @Service
 public class S3Service {
@@ -27,8 +24,8 @@ public class S3Service {
     @Value("${DO_SPACES_REGION}")
     private String region;
 
-    public S3Service(@Value("${DO_SPACES_KEY}") String accessKey,
-                     @Value("${DO_SPACES_SECRET}") String secretKey) {
+    public S3Service(@Value("${DO_SPACES_ACCESS_KEY}") String accessKey,
+                     @Value("${DO_SPACES_SECRET_KEY}") String secretKey) {
         AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         this.s3Client = S3Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
@@ -44,7 +41,7 @@ public class S3Service {
                 .acl("public-read")
                 .build();
         PutObjectResponse putResponse = s3Client.putObject(putRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(data));
-        return endpoint + "/" + fileName;
+        return endpoint + "/" + putResponse;
     }
 
 }
