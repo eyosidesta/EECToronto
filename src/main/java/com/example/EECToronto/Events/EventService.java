@@ -3,6 +3,7 @@ package com.example.EECToronto.Events;
 import com.example.EECToronto.DTO.EventRequestDTO;
 import com.example.EECToronto.config.S3Service;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class EventService {
     public List<Events> getEventByType(String event_type) {
         return eventRepository.findByEventType(event_type);
     }
-    public Events addEventsService(EventRequestDTO dto) throws IOException {
+    public Events addEventsService(@ModelAttribute EventRequestDTO dto) throws IOException {
         MultipartFile image = dto.getEventImage();
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {

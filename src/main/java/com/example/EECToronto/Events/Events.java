@@ -2,6 +2,7 @@ package com.example.EECToronto.Events;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -37,11 +38,11 @@ public class Events {
     private String eventType;
 
     @Column(name = "event_date")
-    private Date eventDate;
+    private LocalDateTime eventDate;
 
     public Events() {}
 
-    public Events (String eventTitle, String eventDescription, String eventImageUrl, String eventStreet, String eventCity, String eventType, Date eventDate) {
+    public Events (String eventTitle, String eventDescription, String eventImageUrl, String eventStreet, String eventCity, String eventType, LocalDateTime eventDate) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventImageUrl = eventImageUrl;
@@ -90,10 +91,10 @@ public class Events {
     public void setEventImageUrl(String eventImageUrl) {
         this.eventImageUrl = eventImageUrl;
     }
-    public Date getEventDate() {
+    public LocalDateTime getEventDate() {
         return eventDate;
     }
-    public void setEventDate(Date eventDate) {
+    public void setEventDate(LocalDateTime eventDate) {
         this.eventDate = eventDate;
     }
 }

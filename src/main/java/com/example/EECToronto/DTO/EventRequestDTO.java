@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -15,6 +16,6 @@ public class EventRequestDTO {
     private String eventCity;
     private String eventStreet;
     private String eventType;
-    private Date eventDate;
+    private LocalDateTime eventDate;
     private MultipartFile eventImage;
 }
