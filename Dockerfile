@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 COPY --from=build /app/target/EECToronto-0.0.1-SNAPSHOT.jar ./EECToronto.jar
 EXPOSE 8080

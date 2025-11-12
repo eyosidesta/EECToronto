@@ -1,5 +1,6 @@
 package com.example.EECToronto.config;
 
+import com.example.EECToronto.auth.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,21 +25,23 @@ import static java.security.KeyRep.Type.SECRET;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthFilter(UserDetailsService userDetailsService) {
+    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
-
-    private static final String SECRET_KEY = "your_secret_key_here_your_secret_key_here";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-                                throws ServletException, IOException {
+            throws ServletException, IOException {
+
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
+        final String token;
         final String username;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -45,35 +49,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7);
-        username = extractUsername(jwt);
+        token = authHeader.substring(7);
+        try {
+            username = jwtService.extractUsername(token);
+        } catch (Exception ex) {
+            // invalid token (signature, malformed, expired, etc.) — proceed without authentication
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (validateToken(jwt, userDetails)) {
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtService.isTokenValid(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
         filterChain.doFilter(request, response);
-    }
-    private Key getSignedKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    }
-    private String extractUsername(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSignedKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
-    }
-
-    private boolean validateToken(String token, Object userDetails) {
-        return true;
     }
 }
