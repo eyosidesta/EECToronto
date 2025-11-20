@@ -32,10 +32,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/members").permitAll()
+                                .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/super-admin/**").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/admin").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

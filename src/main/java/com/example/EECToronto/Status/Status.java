@@ -22,8 +22,6 @@ public class Status {
     @Column(nullable = false)
     private String name;
     private String description;
-    @OneToMany(mappedBy = "status", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Members> members = new ArrayList<>();
 
     public Status() {};
     public Status(String name, String description) {

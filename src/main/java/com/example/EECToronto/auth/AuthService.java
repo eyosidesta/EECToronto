@@ -2,10 +2,21 @@ package com.example.EECToronto.auth;
 
 import com.example.EECToronto.Admin.Admin;
 import com.example.EECToronto.Admin.AdminRepository;
+import com.example.EECToronto.DTO.AuthRequest;
+import com.example.EECToronto.DTO.AuthResponse;
+import com.example.EECToronto.DTO.RegisterRequest;
+import com.example.EECToronto.DTO.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 
 @Service
 public class AuthService {
@@ -14,6 +25,7 @@ public class AuthService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     public AuthService(AuthenticationManager authenticationManager,
                        AdminRepository adminRepository,
@@ -25,7 +37,15 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
+    public List<Admin> allAdmin() {
+        return adminRepository.findAll();
+
+    }
+
     public AuthResponse login(AuthRequest request) {
+
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Admin admin = adminRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
@@ -35,7 +55,8 @@ public class AuthService {
 
         if (!admin.isPasswordChanged()) {
             // client should call change-password endpoint first
-            return new AuthResponse(null, "Please change your default password first", admin.getRole().name());
+            String token = jwtService.generateToken(admin.getUsername(), admin.getRole().name());
+            return new AuthResponse(token, "Please change your default password first", admin.getRole().name(), admin.isPasswordChanged());
         }
 
         authenticationManager.authenticate(
@@ -43,7 +64,28 @@ public class AuthService {
         );
 
         String token = jwtService.generateToken(admin.getUsername(), admin.getRole().name());
-        return new AuthResponse(token, "Login Successful", admin.getRole().name());
+        return new AuthResponse(token, "Login Successful", admin.getRole().name(), admin.isPasswordChanged());
+    }
+
+    public String register(RegisterRequest request, String currentAdminUsername) {
+        var currentAdmin = adminRepository.findByUsername(currentAdminUsername)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+        if (currentAdmin.getRole() != Role.SUPER_ADMIN) {
+            throw  new RuntimeException("Only Super Admin can register new Admins.");
+        }
+        if (adminRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already existed");
+        }
+
+        Admin newAdmin = new Admin();
+        newAdmin.setName(request.getName());
+        newAdmin.setUsername(request.getUsername());
+        newAdmin.setRole(request.getRole());
+        newAdmin.setPassword(passwordEncoder.encode("123456"));
+        newAdmin.setPasswordChanged(false);
+
+        adminRepository.save(newAdmin);
+        return "Admin Registration Successful!";
     }
 
     public String changePassword(String username, String newPassword) {

@@ -21,8 +21,6 @@ public class TeamType {
     @Column(length = 255, nullable = false)
     private String name;
     private String description;
-    @OneToMany(mappedBy = "team_type", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Teams> teams = new ArrayList<>();
 
     public TeamType() {};
 

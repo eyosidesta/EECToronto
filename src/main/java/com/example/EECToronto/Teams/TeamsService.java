@@ -10,26 +10,14 @@ import java.util.List;
 @Service
 public class TeamsService {
     private final TeamsRepository teamsRepository;
-    private final TeamTypeRepository teamTypeRepository;
     @Autowired
-    public TeamsService(TeamsRepository teamsRepository, TeamTypeRepository teamTypeRepository) {
+    public TeamsService(TeamsRepository teamsRepository) {
         this.teamsRepository = teamsRepository;
-        this.teamTypeRepository = teamTypeRepository;
     }
     public List<Teams> getAllTeamsService() {
         return teamsRepository.findAll();
     }
     public void addTeamService(Teams team) {
-        if (team.getTeam_type() != null) {
-            TeamType team_type = team.getTeam_type();
-            if (team_type.getId() != null) {
-                team_type = teamTypeRepository.findById(team_type.getId()).orElseThrow(() -> new IllegalArgumentException("Invalid Team Type Id"));
-            } else {
-                teamTypeRepository.save(team_type);
-            }
-            team.setTeam_type(team_type);
-
-        }
         teamsRepository.save(team);
     }
 }

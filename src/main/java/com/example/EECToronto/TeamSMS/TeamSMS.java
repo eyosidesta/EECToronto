@@ -20,38 +20,14 @@ public class TeamSMS {
     private Long id;
     @Column(nullable = false)
     private String message;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name="author_id", foreignKey = @ForeignKey(name = "author_sms_fkey"), nullable = true)
-    private Members members;
-
-    @ManyToOne
-    @JoinColumn(name="team_id", foreignKey = @ForeignKey(name="team_sms_fkey"), nullable = false)
-    private Teams teams;
 
     public TeamSMS() {};
 
-    public TeamSMS(String message, Members members, Teams teams) {
+    public TeamSMS(String message) {
         this.message = message;
-        this.members = members;
-        this.teams = teams;
 
     }
 
-    public Members getMembers() {
-        return members;
-    }
-
-    public void setmembers(Members members) {
-        this.members = members;
-    }
-
-    public Teams getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Teams teams) {
-        this.teams = teams;
-    }
 
     public Long getId() {
         return id;

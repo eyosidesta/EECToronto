@@ -9,14 +9,8 @@ import java.util.Date;
 @Table
 public class Events {
     @Id
-    @SequenceGenerator(
-            name="event_sequence",
-            sequenceName = "event_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "event_sequence"
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
     @Column(name = "event_title")

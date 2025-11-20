@@ -17,10 +17,10 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration:3600000}")
+    @Value("${JWT_EXPIRATION:3600000}")
     private long jwtExpiration;
 
     private Key getSigningKey() {

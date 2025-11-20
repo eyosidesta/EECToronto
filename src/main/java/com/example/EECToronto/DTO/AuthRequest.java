@@ -1,4 +1,4 @@
-package com.example.EECToronto.auth;
+package com.example.EECToronto.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
