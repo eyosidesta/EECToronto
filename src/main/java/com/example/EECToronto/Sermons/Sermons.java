@@ -48,6 +48,9 @@ public class Sermons {
     @Column(name = "sermon_type", nullable = false)
     private SermonType sermonType;
 
+    @Column(name = "created_by_admin_name")
+    private String createdByAdminName;
+
     @OneToMany(mappedBy = "sermons", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<SermonGroupRship> groups = new HashSet<>();

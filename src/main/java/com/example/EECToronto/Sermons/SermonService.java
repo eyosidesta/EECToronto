@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 @Service
 public class SermonService {
     private final SermonRepository sermonRepository;
+    
     public SermonService(SermonRepository sermonRepository) {
         this.sermonRepository = sermonRepository;
     }
@@ -19,23 +20,28 @@ public class SermonService {
     public Optional<Sermons> getSermonById(Long id) {
         return sermonRepository.findById(id);
     }
+    
     public List<Sermons> getSermonByType(SermonType sermonType) {
         return sermonRepository.findBySermonType(sermonType);
     }
 
-    public void createSermon(Sermons sermons) {
-        sermonRepository.save(sermons);
+    public Sermons createSermon(Sermons sermons, String adminName) {
+        sermons.setCreatedByAdminName(adminName);
+        return sermonRepository.save(sermons);
     }
-
 
     public Sermons updateSermon(Long id, Sermons updateSermon) {
         return sermonRepository.findById(id)
-                .map(existingEvent -> {
-                    existingEvent.setPreacherName(updateSermon.getPreacherName());
-                    existingEvent.setSermonTitle(updateSermon.getSermonTitle());
-                    existingEvent.setSermonDate(updateSermon.getSermonDate());
-                    existingEvent.setSermonType(updateSermon.getSermonType());
-                    return sermonRepository.save(existingEvent);
+                .map(existingSermon -> {
+                    existingSermon.setPreacherName(updateSermon.getPreacherName());
+                    existingSermon.setSermonTitle(updateSermon.getSermonTitle());
+                    existingSermon.setSermonDate(updateSermon.getSermonDate());
+                    existingSermon.setSermonType(updateSermon.getSermonType());
+                    if (updateSermon.getYoutubeLink() != null) {
+                        existingSermon.setYoutubeLink(updateSermon.getYoutubeLink());
+                    }
+                    // Don't update createdByAdminName on update - keep original creator
+                    return sermonRepository.save(existingSermon);
                 }).orElseThrow(() -> new RuntimeException("Sermon Not Found with Id" + id));
     }
 
