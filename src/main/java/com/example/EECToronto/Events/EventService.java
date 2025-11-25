@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,30 @@ public class EventService {
                     existingEvent.setEventDate(updatedEvent.getEventDate());
                     return eventRepository.save(existingEvent);
                 }).orElseThrow(() -> new RuntimeException("Event Not Found with id " + id));
+    }
+
+    public void deleteEvent(Long id) {
+        eventRepository.deleteById(id);
+    }
+
+    /**
+     * Delete events that are past their event date by more than 1 day
+     * This is called by a scheduled task
+     */
+    public int deletePastEvents() {
+        // Get current date/time minus 1 day (events that are at least 1 day past their event date)
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        
+        // Find all events where eventDate is before (oneDayAgo)
+        List<Events> pastEvents = eventRepository.findByEventDateBefore(oneDayAgo);
+        
+        // Delete all past events
+        int count = pastEvents.size();
+        if (count > 0) {
+            eventRepository.deleteAll(pastEvents);
+        }
+        
+        return count;
     }
 
 }

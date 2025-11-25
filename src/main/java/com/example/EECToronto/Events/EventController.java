@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "https://geecvancouver.vercel.app")
 @RestController
 @RequestMapping(path="api/events")
 public class EventController {
@@ -43,5 +42,17 @@ public class EventController {
     public ResponseEntity<Events> updateEvent(@PathVariable Long id, @RequestBody Events event) {
         Events updated = eventService.updateEvent(id, event);
         return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Events> updateEventPartial(@PathVariable Long id, @RequestBody Events event) {
+        Events updated = eventService.updateEvent(id, event);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+        return ResponseEntity.noContent().build();
     }
 }
