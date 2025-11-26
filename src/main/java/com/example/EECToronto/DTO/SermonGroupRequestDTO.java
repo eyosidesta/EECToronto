@@ -13,3 +13,4 @@ public class SermonGroupRequestDTO {
     private MultipartFile image;
 }
 
+
