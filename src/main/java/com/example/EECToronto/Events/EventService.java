@@ -59,4 +59,20 @@ public class EventService {
                 }).orElseThrow(() -> new RuntimeException("Event Not Found with id " + id));
     }
 
+    public int deletePastEvents() {
+        // Get current date/time minus 1 day
+        java.time.LocalDateTime oneDayAgo = java.time.LocalDateTime.now().minusDays(1);
+        
+        // Find all events with eventDate before the cutoff date
+        List<Events> pastEvents = eventRepository.findAll().stream()
+                .filter(event -> event.getEventDate() != null && event.getEventDate().isBefore(oneDayAgo))
+                .toList();
+
+        // Delete the past events
+        int count = pastEvents.size();
+        eventRepository.deleteAll(pastEvents);
+        
+        return count;
+    }
+
 }

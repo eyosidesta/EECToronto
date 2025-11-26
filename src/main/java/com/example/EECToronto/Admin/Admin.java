@@ -30,5 +30,6 @@ public class Admin {
     private Role role;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean passwordChanged = false;
 }
