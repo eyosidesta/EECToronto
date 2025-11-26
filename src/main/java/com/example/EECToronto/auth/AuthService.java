@@ -56,7 +56,7 @@ public class AuthService {
         if (!admin.isPasswordChanged()) {
             // client should call change-password endpoint first
             String token = jwtService.generateToken(admin.getUsername(), admin.getRole().name());
-            return new AuthResponse(token, "Please change your default password first", admin.getRole().name(), admin.isPasswordChanged());
+            return new AuthResponse(token, "Please change your default password first", admin.getRole().name(), admin.isPasswordChanged(), admin.getName());
         }
 
         authenticationManager.authenticate(
@@ -64,15 +64,23 @@ public class AuthService {
         );
 
         String token = jwtService.generateToken(admin.getUsername(), admin.getRole().name());
-        return new AuthResponse(token, "Login Successful", admin.getRole().name(), admin.isPasswordChanged());
+        return new AuthResponse(token, "Login Successful", admin.getRole().name(), admin.isPasswordChanged(), admin.getName());
     }
 
     public String register(RegisterRequest request, String currentAdminUsername) {
         var currentAdmin = adminRepository.findByUsername(currentAdminUsername)
                 .orElseThrow(() -> new RuntimeException("Unauthorized"));
-        if (currentAdmin.getRole() != Role.SUPER_ADMIN) {
-            throw  new RuntimeException("Only Super Admin can register new Admins.");
+        
+        // Only SUPER_ADMIN and MASTER_ADMIN can register
+        if (currentAdmin.getRole() != Role.SUPER_ADMIN && currentAdmin.getRole() != Role.MASTER_ADMIN) {
+            throw new RuntimeException("Only Super Admin or Master Admin can register new Admins.");
         }
+        
+        // SUPER_ADMIN cannot register MASTER_ADMIN
+        if (currentAdmin.getRole() == Role.SUPER_ADMIN && request.getRole() == Role.MASTER_ADMIN) {
+            throw new RuntimeException("Super Admin cannot register Master Admin.");
+        }
+        
         if (adminRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already existed");
         }
@@ -97,5 +105,124 @@ public class AuthService {
         adminRepository.save(admin);
 
         return "Password Changed Successfully!";
+    }
+
+    public String updateProfile(String username, String newName) {
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        // Update name
+        if (newName != null && !newName.trim().isEmpty()) {
+            admin.setName(newName);
+        }
+
+        adminRepository.save(admin);
+        return "Profile Updated Successfully!";
+    }
+
+    public String changePasswordWithOldPassword(String username, String oldPassword, String newPassword) {
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        // Verify old password
+        if (!passwordEncoder.matches(oldPassword, admin.getPassword())) {
+            throw new RuntimeException("Old password is incorrect");
+        }
+
+        // Update password
+        admin.setPassword(passwordEncoder.encode(newPassword));
+        admin.setPasswordChanged(true);
+        adminRepository.save(admin);
+
+        return "Password Changed Successfully!";
+    }
+
+    public List<Admin> getAllAdminsForManagement(String currentAdminUsername) {
+        var currentAdmin = adminRepository.findByUsername(currentAdminUsername)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+        
+        // Only SUPER_ADMIN and MASTER_ADMIN can view all admins
+        if (currentAdmin.getRole() != Role.SUPER_ADMIN && currentAdmin.getRole() != Role.MASTER_ADMIN) {
+            throw new RuntimeException("Unauthorized to view admins");
+        }
+        
+        return adminRepository.findAll();
+    }
+
+    public String deleteAdmin(Long adminId, String currentAdminUsername) {
+        var currentAdmin = adminRepository.findByUsername(currentAdminUsername)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+        
+        Admin adminToDelete = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        
+        // SUPER_ADMIN can only delete ADMIN
+        if (currentAdmin.getRole() == Role.SUPER_ADMIN) {
+            if (adminToDelete.getRole() == Role.SUPER_ADMIN || adminToDelete.getRole() == Role.MASTER_ADMIN) {
+                throw new RuntimeException("Super Admin cannot delete Super Admin or Master Admin");
+            }
+        }
+        
+        // MASTER_ADMIN can delete ADMIN and SUPER_ADMIN, but not MASTER_ADMIN
+        if (currentAdmin.getRole() == Role.MASTER_ADMIN) {
+            if (adminToDelete.getRole() == Role.MASTER_ADMIN) {
+                throw new RuntimeException("Master Admin cannot delete another Master Admin");
+            }
+        }
+        
+        adminRepository.delete(adminToDelete);
+        return "Admin deleted successfully";
+    }
+
+    public String changeAdminRole(Long adminId, Role newRole, String currentAdminUsername) {
+        var currentAdmin = adminRepository.findByUsername(currentAdminUsername)
+                .orElseThrow(() -> new RuntimeException("Unauthorized"));
+        
+        Admin adminToUpdate = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        
+        // SUPER_ADMIN can only promote ADMIN to SUPER_ADMIN (not demote SUPER_ADMIN)
+        if (currentAdmin.getRole() == Role.SUPER_ADMIN) {
+            if (adminToUpdate.getRole() == Role.SUPER_ADMIN) {
+                throw new RuntimeException("Super Admin cannot change role of another Super Admin");
+            }
+            if (adminToUpdate.getRole() == Role.MASTER_ADMIN) {
+                throw new RuntimeException("Super Admin cannot change role of Master Admin");
+            }
+            if (newRole == Role.MASTER_ADMIN) {
+                throw new RuntimeException("Super Admin cannot promote to Master Admin");
+            }
+            // Can only promote ADMIN to SUPER_ADMIN
+            if (adminToUpdate.getRole() == Role.ADMIN && newRole == Role.SUPER_ADMIN) {
+                adminToUpdate.setRole(newRole);
+                adminRepository.save(adminToUpdate);
+                return "Admin role updated successfully";
+            } else {
+                throw new RuntimeException("Invalid role change");
+            }
+        }
+        
+        // MASTER_ADMIN can change role of ADMIN and SUPER_ADMIN, but not MASTER_ADMIN
+        if (currentAdmin.getRole() == Role.MASTER_ADMIN) {
+            if (adminToUpdate.getRole() == Role.MASTER_ADMIN) {
+                throw new RuntimeException("Master Admin cannot change role of another Master Admin");
+            }
+            // Can promote/demote ADMIN and SUPER_ADMIN (but not to MASTER_ADMIN if target is not already MASTER_ADMIN)
+            if (newRole == Role.MASTER_ADMIN && adminToUpdate.getRole() != Role.MASTER_ADMIN) {
+                // Allow promoting to MASTER_ADMIN
+                adminToUpdate.setRole(newRole);
+                adminRepository.save(adminToUpdate);
+                return "Admin role updated successfully";
+            } else if (newRole != Role.MASTER_ADMIN) {
+                // Allow changing to ADMIN or SUPER_ADMIN
+                adminToUpdate.setRole(newRole);
+                adminRepository.save(adminToUpdate);
+                return "Admin role updated successfully";
+            } else {
+                throw new RuntimeException("Invalid role change");
+            }
+        }
+        
+        throw new RuntimeException("Unauthorized to change admin role");
     }
 }

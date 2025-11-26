@@ -12,4 +12,5 @@ public class AuthResponse {
     private String message;
     private String role;
     private boolean passwordChanged;
+    private String name;
 }

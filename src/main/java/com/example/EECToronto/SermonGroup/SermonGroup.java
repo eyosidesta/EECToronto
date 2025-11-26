@@ -44,6 +44,9 @@ public class SermonGroup {
     @Column(name = "sermon_type")
     private SermonType sermonType;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JsonManagedReference
     private Set<SermonGroupRship> sermons = new HashSet<>();
