@@ -29,50 +29,7 @@ public class WorshipDepartmentRequestController {
         }
     }
 
-    // Admin endpoints - require auth (handled by SecurityConfig)
-    @GetMapping
-    public ResponseEntity<List<WorshipDepartmentRequest>> getAllRequests() {
-        List<WorshipDepartmentRequest> requests = requestService.getAllRequests();
-        return ResponseEntity.ok(requests);
-    }
-
-    @GetMapping("/uncontacted")
-    public ResponseEntity<List<WorshipDepartmentRequest>> getUncontactedRequests() {
-        List<WorshipDepartmentRequest> requests = requestService.getUncontactedRequests();
-        return ResponseEntity.ok(requests);
-    }
-
-    @PatchMapping("/{id}/contacted")
-    public ResponseEntity<?> markAsContacted(
-            @PathVariable Long id,
-            @RequestBody Map<String, Boolean> body) {
-        try {
-            WorshipDepartmentRequest updated = requestService.markAsContacted(id);
-            return ResponseEntity.ok(updated);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRequest(@PathVariable Long id) {
-        try {
-            requestService.deleteRequest(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        }
-    }
-
-    @PostMapping("/{id}/add-to-members")
-    public ResponseEntity<?> addToMembersList(@PathVariable Long id) {
-        try {
-            String message = requestService.addToMembersList(id);
-            return ResponseEntity.ok(message);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        }
-    }
+    // Admin endpoints moved to separate controller - see WorshipDepartmentRequestAdminController
 
     // Helper class for error responses
     private static class ErrorResponse {

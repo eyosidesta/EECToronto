@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/status")
+@RequestMapping("api/admin/status")
 public class StatusController {
     private final StatusService statusService;
     @Autowired
