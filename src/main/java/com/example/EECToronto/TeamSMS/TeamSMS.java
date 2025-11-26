@@ -8,15 +8,7 @@ import com.example.EECToronto.Members.Members;
 @Table(name="team_sms")
 public class TeamSMS {
     @Id
-    @SequenceGenerator(
-            name="team_sms_sequence",
-            sequenceName="team_sms_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy=GenerationType.SEQUENCE,
-            generator="team_sms_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String message;

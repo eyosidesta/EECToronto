@@ -12,15 +12,7 @@ import java.util.*;
 @Table(name = "members")
 public class Members {
     @Id
-    @SequenceGenerator(
-            name = "member_sequence",
-            sequenceName = "member_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "member_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;

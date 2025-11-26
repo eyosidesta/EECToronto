@@ -23,17 +23,8 @@ import lombok.Setter;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 
 public class SermonGroupRship {
-
     @Id
-    @SequenceGenerator(
-            name="sermon_group_rship_sequence",
-            sequenceName = "sermon_group_rship_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "sermon_group_rship_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)

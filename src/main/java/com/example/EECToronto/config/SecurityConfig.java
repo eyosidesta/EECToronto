@@ -53,8 +53,6 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "https://www.geecvancouver.ca",
-                "https://geecvancouver.ca",
-                "https://geecvancouver.vercel.app",
                 "http://localhost:3036"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

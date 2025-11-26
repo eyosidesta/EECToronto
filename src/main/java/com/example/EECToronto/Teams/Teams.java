@@ -13,15 +13,7 @@ import java.util.List;
 @Table(name="teams")
 public class Teams {
     @Id
-    @SequenceGenerator(
-            name="team_sequence",
-            sequenceName = "team_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "team_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 255, nullable = false)
     private String team_name;
