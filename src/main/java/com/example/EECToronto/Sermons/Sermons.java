@@ -21,15 +21,7 @@ import java.util.Set;
 
 public class Sermons {
     @Id
-    @SequenceGenerator(
-            name="sermon_sequence",
-            sequenceName = "sermon_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "sermon_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "preacher_name", nullable = false)

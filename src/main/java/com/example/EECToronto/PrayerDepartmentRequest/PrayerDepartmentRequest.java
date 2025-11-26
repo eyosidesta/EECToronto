@@ -14,15 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class PrayerDepartmentRequest {
     @Id
-    @SequenceGenerator(
-            name = "prayer_request_sequence",
-            sequenceName = "prayer_request_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "prayer_request_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

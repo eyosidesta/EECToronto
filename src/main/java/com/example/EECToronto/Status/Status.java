@@ -9,15 +9,7 @@ import java.util.ArrayList;
 @Table(name="status")
 public class Status {
     @Id
-    @SequenceGenerator(
-            name="status_sequence",
-            sequenceName = "status_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "status_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;

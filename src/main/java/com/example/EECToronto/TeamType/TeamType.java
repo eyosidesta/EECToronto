@@ -8,15 +8,7 @@ import java.util.*;
 @Table(name="team_type")
 public class TeamType {
     @Id
-    @SequenceGenerator(
-            name="team_type_sequence",
-            sequenceName = "team_type_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "team_type_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 255, nullable = false)
     private String name;

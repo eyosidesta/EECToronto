@@ -23,15 +23,7 @@ import java.util.*;
 
 public class SermonGroup {
     @Id
-    @SequenceGenerator(
-            name="sermon_group_sequence",
-            sequenceName = "sermon_group_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator="sermon_group_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)

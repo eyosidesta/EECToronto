@@ -8,16 +8,7 @@ import jakarta.persistence.*;
 @Table
 public class TeamMembers {
     @Id
-    @SequenceGenerator(
-            name = "team_members_sequence",
-            sequenceName = "team_members_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "team_members_sequence"
-    )
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name="team_id", nullable = false, foreignKey = @ForeignKey(name="team_member_fkey"))
