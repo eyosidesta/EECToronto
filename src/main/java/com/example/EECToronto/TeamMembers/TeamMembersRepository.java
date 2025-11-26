@@ -9,4 +9,5 @@ import java.util.List;
 public interface TeamMembersRepository extends JpaRepository<TeamMembers, Long> {
     List<TeamMembers> findTeamsByMembers(Members members);
     List<TeamMembers> findMembersByTeams(Teams teams);
+    boolean existsByTeamsAndMembers(Teams teams, Members members);
 }

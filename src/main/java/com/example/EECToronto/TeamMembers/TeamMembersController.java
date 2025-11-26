@@ -36,4 +36,14 @@ public class TeamMembersController {
         System.out.println("Yes we do*******: " + team_id);
         teamMembersService.addMemberToTeam(team_id, member_id);
     }
+
+    @GetMapping("/get_team_members_by_name/{teamName}")
+    public List<Members> getMembersByTeamName(@PathVariable String teamName) {
+        return teamMembersService.getMembersByTeamName(teamName);
+    }
+
+    @DeleteMapping("/remove_member/team/{team_id}/member/{member_id}")
+    public void removeMemberFromTeam(@PathVariable Long team_id, @PathVariable Long member_id) {
+        teamMembersService.removeMemberFromTeam(team_id, member_id);
+    }
 }

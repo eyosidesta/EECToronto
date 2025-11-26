@@ -33,7 +33,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/members").permitAll()
-                                .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/prayer-department-requests").permitAll()
+                        .requestMatchers("/api/prayer-department-requests/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/team_members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/teams/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
                         .requestMatchers("/api/super-admin/**").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
                         .requestMatchers("/api/admin").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
                         .anyRequest().permitAll()
@@ -48,6 +53,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "https://www.geecvancouver.ca",
+                "https://geecvancouver.ca",
+                "https://geecvancouver.vercel.app",
                 "http://localhost:3036"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

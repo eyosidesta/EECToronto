@@ -66,15 +66,17 @@ public class EventService {
 
     /**
      * Delete events that are past their event date by more than 1 day
-     * This is called by a scheduled task
+     * This is called by a scheduled task (EventScheduledTask)
      */
     public int deletePastEvents() {
         // Get current date/time minus 1 day (events that are at least 1 day past their event date)
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
         
-        // Find all events where eventDate is before (oneDayAgo)
-        List<Events> pastEvents = eventRepository.findByEventDateBefore(oneDayAgo);
-        
+        // Find all events with eventDate before the cutoff date
+        List<Events> pastEvents = eventRepository.findAll().stream()
+                .filter(event -> event.getEventDate() != null && event.getEventDate().isBefore(oneDayAgo))
+                .toList();
+
         // Delete all past events
         int count = pastEvents.size();
         if (count > 0) {

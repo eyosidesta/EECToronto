@@ -53,5 +53,6 @@ public class Sermons {
 
     @OneToMany(mappedBy = "sermons", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private Set<SermonGroupRship> groups = new HashSet<>();
 }

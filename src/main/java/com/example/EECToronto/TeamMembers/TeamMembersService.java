@@ -65,4 +65,26 @@ public class TeamMembersService {
         TeamMembers teamMember = new TeamMembers(team, member);
         teamMembersRepository.save(teamMember);
     }
+
+    public List<Members> getMembersByTeamName(String teamName) {
+        Teams team = teamsRepository.findByTeam_nameIgnoreCase(teamName)
+                .orElseThrow(() -> new RuntimeException("Team not found: " + teamName));
+        return teamMembersRepository.findMembersByTeams(team)
+                .stream()
+                .map(TeamMembers::getMembers)
+                .toList();
+    }
+
+    public void removeMemberFromTeam(Long team_id, Long member_id) {
+        Teams team = teamsRepository.findById(team_id).orElseThrow(() -> new IllegalArgumentException("Invalid Team Id: " + team_id));
+        Members member = membersRepository.findById(member_id).orElseThrow(() -> new IllegalArgumentException("Invalid Member Id: " + member_id));
+        
+        TeamMembers teamMember = teamMembersRepository.findMembersByTeams(team)
+                .stream()
+                .filter(tm -> tm.getMembers().getId().equals(member_id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Member is not in this team"));
+        
+        teamMembersRepository.delete(teamMember);
+    }
 }
