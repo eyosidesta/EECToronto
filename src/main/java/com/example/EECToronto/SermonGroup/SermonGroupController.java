@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/sermon-groups")
+@RequestMapping("api/admin/sermon-groups")
 public class SermonGroupController {
     private final SermonGroupService sermonGroupService;
     

@@ -32,17 +32,20 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/members").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/prayer-department-requests").permitAll()
-                        .requestMatchers("/api/prayer-department-requests/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
-                        .requestMatchers("/api/worship-department-requests").permitAll()
-                        .requestMatchers("/api/worship-department-requests/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
-                        .requestMatchers("/api/team_members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
-                        .requestMatchers("/api/teams/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
-                        .requestMatchers("/api/members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        // Public endpoints
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/prayer-department-requests").permitAll() // POST only - public user submissions
+                        .requestMatchers("/api/worship-department-requests").permitAll() // POST only - public user submissions
+                        
+                        // Admin registration - only SUPER_ADMIN and MASTER_ADMIN
+                        .requestMatchers("/api/auth/register").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
+                        
+                        // All admin endpoints grouped under /api/admin/**
+                        .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        
+                        // Super admin endpoints - only SUPER_ADMIN and MASTER_ADMIN
                         .requestMatchers("/api/super-admin/**").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
-                        .requestMatchers("/api/admin").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping(path="api/team_sms")
+@RequestMapping(path="api/admin/team_sms")
 public class TeamSMSController {
     private final TeamSMSService teamSMSService;
     @Autowired

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
-@RequestMapping(path="api/message")
+@RequestMapping(path="api/admin/message")
 public class BulkMessageController {
 
     private final BulkMessageService bulkMessageService;

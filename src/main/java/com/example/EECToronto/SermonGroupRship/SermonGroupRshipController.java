@@ -9,7 +9,7 @@ import java.util.List;
 
 @CrossOrigin("https://geecvancouver.vercel.app")
 @RestController
-@RequestMapping("api/sermon-group-rship")
+@RequestMapping("api/admin/sermon-group-rship")
 public class SermonGroupRshipController {
     private final SermonGroupRshipService rshipService;
     @Autowired

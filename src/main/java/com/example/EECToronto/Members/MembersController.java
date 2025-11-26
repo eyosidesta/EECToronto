@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/members")
+@RequestMapping(path="api/admin/members")
 public class MembersController {
     private final MembersService membersService;
     private final TeamMembersService teamMembersService;

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/teams")
+@RequestMapping(path="api/admin/teams")
 public class TeamsContorller {
     private final TeamsService teamsService;
     @Autowired

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="api/sermons")
+@RequestMapping(path="api/admin/sermons")
 public class SermonController {
     private final SermonService sermonService;
     private final AdminRepository adminRepository;

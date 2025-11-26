@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/team_type")
+@RequestMapping(path="api/admin/team_type")
 public class TeamTypeController {
     private final TeamTypeService teamTypeService;
     @Autowired
