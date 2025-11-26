@@ -36,6 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/prayer-department-requests").permitAll()
                         .requestMatchers("/api/prayer-department-requests/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/worship-department-requests").permitAll()
+                        .requestMatchers("/api/worship-department-requests/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
                         .requestMatchers("/api/team_members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
                         .requestMatchers("/api/teams/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
                         .requestMatchers("/api/members/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
