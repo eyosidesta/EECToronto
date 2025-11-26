@@ -38,13 +38,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/worship-department-requests").permitAll() // POST only - public user submissions
                         
                         // Admin registration - only SUPER_ADMIN and MASTER_ADMIN
-                        .requestMatchers("/api/auth/register").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/auth/register").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_MASTER_ADMIN")
                         
                         // All admin endpoints grouped under /api/admin/**
-                        .requestMatchers("/api/admin/**").hasAnyRole("SUPER_ADMIN", "ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_MASTER_ADMIN")
                         
                         // Super admin endpoints - only SUPER_ADMIN and MASTER_ADMIN
-                        .requestMatchers("/api/super-admin/**").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
+                        .requestMatchers("/api/super-admin/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_MASTER_ADMIN")
                         
                         .anyRequest().permitAll()
                 )
