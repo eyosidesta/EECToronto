@@ -1,5 +1,7 @@
 package com.example.EECToronto.Members;
 
+import com.example.EECToronto.TeamMembers.TeamMembersService;
+import com.example.EECToronto.Teams.Teams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +12,12 @@ import java.util.List;
 @RequestMapping(path="api/members")
 public class MembersController {
     private final MembersService membersService;
+    private final TeamMembersService teamMembersService;
 
     @Autowired
-    public MembersController(MembersService membersService) {
+    public MembersController(MembersService membersService, TeamMembersService teamMembersService) {
         this.membersService = membersService;
+        this.teamMembersService = teamMembersService;
     }
 
     @GetMapping
@@ -40,6 +44,12 @@ public class MembersController {
     public ResponseEntity<Members> getMemberById(@PathVariable Long id) {
         Members member = membersService.getMemberById(id);
         return ResponseEntity.ok(member);
+    }
+
+    @GetMapping("/{id}/teams")
+    public ResponseEntity<List<Teams>> getMemberTeams(@PathVariable Long id) {
+        List<Teams> teams = teamMembersService.getTeamsByMembersService(id);
+        return ResponseEntity.ok(teams);
     }
 
     private static class ErrorResponse {
