@@ -14,3 +14,4 @@ public interface FamilyDepartmentRequestRepository extends JpaRepository<FamilyD
     Optional<FamilyDepartmentRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+
