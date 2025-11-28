@@ -1,5 +1,6 @@
 package com.example.EECToronto.TeamMembers;
 
+import com.example.EECToronto.DTO.TeamMemberDTO;
 import com.example.EECToronto.Members.Members;
 import com.example.EECToronto.Teams.Teams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,27 @@ public class TeamMembersController {
         return teamMembersService.getMembersByTeamName(teamName);
     }
 
+    @GetMapping("/get_team_members_with_dates_by_name/{teamName}")
+    public List<TeamMemberDTO> getTeamMembersWithJoinedDateByTeamName(@PathVariable String teamName) {
+        return teamMembersService.getTeamMembersWithJoinedDateByTeamName(teamName);
+    }
+
     @DeleteMapping("/remove_member/team/{team_id}/member/{member_id}")
     public void removeMemberFromTeam(@PathVariable Long team_id, @PathVariable Long member_id) {
         teamMembersService.removeMemberFromTeam(team_id, member_id);
+    }
+
+    @PutMapping("/update_joined_date/team/{team_id}/member/{member_id}")
+    public void updateTeamMemberJoinedDate(@PathVariable Long team_id, @PathVariable Long member_id, @RequestBody java.util.Map<String, String> request) {
+        java.time.LocalDate joinedDate = null;
+        if (request.containsKey("joinedDate") && request.get("joinedDate") != null && !request.get("joinedDate").isEmpty()) {
+            joinedDate = java.time.LocalDate.parse(request.get("joinedDate"));
+        }
+        teamMembersService.updateTeamMemberJoinedDate(team_id, member_id, joinedDate);
+    }
+
+    @GetMapping("/get_team_member/team/{team_id}/member/{member_id}")
+    public TeamMembers getTeamMember(@PathVariable Long team_id, @PathVariable Long member_id) {
+        return teamMembersService.getTeamMember(team_id, member_id);
     }
 }
