@@ -146,8 +146,16 @@ public class FamilyDepartmentRequestService {
 
         // 5. Check if member is already in the team
         if (!teamMembersRepository.existsByTeamsAndMembers(familyTeam, member)) {
-            // 6. Add to TeamMembers
-            TeamMembers teamMember = new TeamMembers(familyTeam, member);
+            // 6. Add to TeamMembers with joinedDate from requestDate or today
+            java.time.LocalDate joinedDate;
+            if (request.getRequestDate() != null) {
+                joinedDate = request.getRequestDate().toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+            } else {
+                joinedDate = java.time.LocalDate.now();
+            }
+            TeamMembers teamMember = new TeamMembers(familyTeam, member, joinedDate);
             teamMembersRepository.save(teamMember);
         }
 

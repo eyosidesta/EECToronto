@@ -1,5 +1,7 @@
 package com.example.EECToronto.Members;
 
+import com.example.EECToronto.DTO.AddMemberDTO;
+import com.example.EECToronto.DTO.AddMemberToDepartmentDTO;
 import com.example.EECToronto.TeamMembers.TeamMembers;
 import com.example.EECToronto.TeamMembers.TeamMembersRepository;
 import com.example.EECToronto.TeamMembers.TeamMembersService;
@@ -37,10 +39,6 @@ public class MembersController {
         return membersService.getAllMembersService();
     }
 
-    @PostMapping
-    public void addMember(@RequestBody Members members) {
-        membersService.addMemberService(members);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMember(@PathVariable Long id, @RequestBody Members member) {
@@ -65,7 +63,7 @@ public class MembersController {
     }
 
     @PostMapping("/add-to-department/{departmentName}")
-    public ResponseEntity<?> addMemberToDepartment(@PathVariable String departmentName, @RequestBody Members memberRequest) {
+    public ResponseEntity<?> addMemberToDepartment(@PathVariable String departmentName, @RequestBody AddMemberToDepartmentDTO memberRequest) {
         try {
             // 1. Check if member exists by phone or email
             Optional<Members> existingMemberByPhone = membersRepository.findMemberByPhone(memberRequest.getPhone());
@@ -104,8 +102,11 @@ public class MembersController {
                 return ResponseEntity.badRequest().body(new ErrorResponse("This member is already in the " + departmentName + " list."));
             }
 
-            // 5. Add to TeamMembers
-            TeamMembers teamMember = new TeamMembers(departmentTeam, member);
+            // 5. Add to TeamMembers with joinedDate (use provided date or today)
+            java.time.LocalDate joinedDate = memberRequest.getJoinedDate() != null 
+                ? memberRequest.getJoinedDate() 
+                : java.time.LocalDate.now();
+            TeamMembers teamMember = new TeamMembers(departmentTeam, member, joinedDate);
             teamMembersRepository.save(teamMember);
 
             return ResponseEntity.ok(new SuccessResponse("Member successfully added to " + departmentName + "."));
@@ -113,6 +114,39 @@ public class MembersController {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Failed to add member: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addMember(@RequestBody AddMemberDTO memberRequest) {
+        try {
+            // Check if member exists by phone or email
+            Optional<Members> existingMemberByPhone = membersRepository.findMemberByPhone(memberRequest.getPhone());
+            Optional<Members> existingMemberByEmail = Optional.empty();
+            
+            if (memberRequest.getEmail() != null && !memberRequest.getEmail().trim().isEmpty()) {
+                existingMemberByEmail = membersRepository.findMemberByEmail(memberRequest.getEmail());
+            }
+
+            if (existingMemberByPhone.isPresent() || existingMemberByEmail.isPresent()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("Member with this phone or email already exists."));
+            }
+
+            // Create new member
+            Members member = new Members();
+            member.setName(memberRequest.getName());
+            member.setGender(memberRequest.getGender());
+            member.setPhone(memberRequest.getPhone());
+            member.setEmail(memberRequest.getEmail());
+            if (memberRequest.getDateOfBirth() != null) {
+                member.setDate_of_birth(java.sql.Date.valueOf(memberRequest.getDateOfBirth()));
+            }
+            member.setAddress(memberRequest.getAddress());
+            
+            membersService.addMemberService(member);
+            return ResponseEntity.ok(new SuccessResponse("Member created successfully."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Failed to create member: " + e.getMessage()));
         }
     }
 
