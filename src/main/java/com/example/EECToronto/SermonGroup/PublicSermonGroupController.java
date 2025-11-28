@@ -40,5 +40,13 @@ public class PublicSermonGroupController {
             throw new RuntimeException("Invalid sermon type: " + type);
         }
     }
+
+    // Get sermons in a specific group - public endpoint
+    @GetMapping("/{groupId}/sermons")
+    public ResponseEntity<?> getSermonsInGroup(@PathVariable Long groupId) {
+        return sermonGroupService.getSermonsInGroup(groupId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
 
