@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/children-department-requests").permitAll() // POST only - public user submissions
                         .requestMatchers("/api/media-department-requests").permitAll() // POST only - public user submissions
                         .requestMatchers("/api/new-member-requests").permitAll() // POST only - public user submissions
+                        .requestMatchers("/api/accept-christ-requests").permitAll() // POST only - public user submissions
                         .requestMatchers("/api/sermons/**").permitAll() // GET only - public sermon access
                         .requestMatchers("/api/sermon-groups/**").permitAll() // GET only - public sermon group access
                         .requestMatchers("/api/events/**").permitAll() // GET only - public event access
