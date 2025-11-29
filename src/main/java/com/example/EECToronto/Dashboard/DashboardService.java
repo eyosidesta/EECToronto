@@ -79,13 +79,13 @@ public class DashboardService {
 
         // Accept Christ metrics
         metrics.setTotalAcceptChrist(acceptChristRequestRepository.count());
-        metrics.setAcceptChristContacted(acceptChristRequestRepository.findByContacted(true).size());
-        metrics.setAcceptChristNotContacted(acceptChristRequestRepository.findByContacted(false).size());
+        metrics.setAcceptChristContacted((long) acceptChristRequestRepository.findByContacted(true).size());
+        metrics.setAcceptChristNotContacted((long) acceptChristRequestRepository.findByContacted(false).size());
 
         // New Members metrics
         metrics.setTotalNewMembers(newMemberRequestRepository.count());
-        metrics.setNewMembersContacted(newMemberRequestRepository.findByContacted(true).size());
-        metrics.setNewMembersNotContacted(newMemberRequestRepository.findByContacted(false).size());
+        metrics.setNewMembersContacted((long) newMemberRequestRepository.findByContacted(true).size());
+        metrics.setNewMembersNotContacted((long) newMemberRequestRepository.findByContacted(false).size());
 
         // New Members within 30 days and 1 year
         Date thirtyDaysAgo = Date.from(LocalDate.now().minusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -106,18 +106,18 @@ public class DashboardService {
                 .count());
 
         // Sermons metrics
-        metrics.setTotalAmharicSermons(sermonRepository.findBySermonType(SermonType.AMHARIC).size());
-        metrics.setTotalEnglishSermons(sermonRepository.findBySermonType(SermonType.ENGLISH).size());
+        metrics.setTotalAmharicSermons((long) sermonRepository.findBySermonType(SermonType.AMHARIC).size());
+        metrics.setTotalEnglishSermons((long) sermonRepository.findBySermonType(SermonType.ENGLISH).size());
 
         // Sermon Groups metrics
-        metrics.setTotalAmharicSermonGroups(sermonGroupRepository.findBySermonType(SermonType.AMHARIC).size());
-        metrics.setTotalEnglishSermonGroups(sermonGroupRepository.findBySermonType(SermonType.ENGLISH).size());
+        metrics.setTotalAmharicSermonGroups((long) sermonGroupRepository.findBySermonType(SermonType.AMHARIC).size());
+        metrics.setTotalEnglishSermonGroups((long) sermonGroupRepository.findBySermonType(SermonType.ENGLISH).size());
 
         // Events metrics
         metrics.setTotalEvents(eventRepository.count());
-        metrics.setGeneralEvents(eventRepository.findByEventType("General").size());
-        metrics.setEnglishServiceEvents(eventRepository.findByEventType("English").size());
-        metrics.setYoungAdultsAmharicEvents(eventRepository.findByEventType("Amharic").size());
+        metrics.setGeneralEvents((long) eventRepository.findByEventType("General").size());
+        metrics.setEnglishServiceEvents((long) eventRepository.findByEventType("English").size());
+        metrics.setYoungAdultsAmharicEvents((long) eventRepository.findByEventType("Amharic").size());
 
         // Contact Messages metrics
         metrics.setTotalContactMessages(contactMessageRepository.count());
