@@ -49,11 +49,11 @@ public class NewMemberRequestAdminController {
         }
     }
 
-    @PatchMapping("/{id}/remove-from-contacted")
+    @DeleteMapping("/{id}/remove-from-contacted")
     public ResponseEntity<?> removeFromContacted(@PathVariable Long id) {
         try {
-            NewMemberRequest updated = requestService.removeFromContacted(id);
-            return ResponseEntity.ok(updated);
+            requestService.removeFromContacted(id);
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

@@ -100,13 +100,12 @@ public class NewMemberRequestService {
         return requestRepository.save(request);
     }
 
-    public NewMemberRequest removeFromContacted(Long id) {
-        NewMemberRequest request = requestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
-        
-        // Set contacted = false (but member stays in members list)
-        request.setContacted(false);
-        return requestRepository.save(request);
+    public void removeFromContacted(Long id) {
+        // Delete the request record entirely (member stays in members list)
+        if (!requestRepository.existsById(id)) {
+            throw new RuntimeException("Request not found");
+        }
+        requestRepository.deleteById(id);
     }
 
     public void deleteRequest(Long id) {
