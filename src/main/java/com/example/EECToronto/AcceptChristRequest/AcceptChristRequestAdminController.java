@@ -59,6 +59,7 @@ public class AcceptChristRequestAdminController {
                 body.get("name"),
                 body.get("phone"),
                 body.get("email"),
+                body.get("gender"),
                 body.get("status")
             );
             return ResponseEntity.ok(updated);

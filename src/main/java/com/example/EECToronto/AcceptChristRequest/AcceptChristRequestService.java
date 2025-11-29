@@ -99,7 +99,7 @@ public class AcceptChristRequestService {
         return requestRepository.save(request);
     }
 
-    public AcceptChristRequest updateContactedRequest(Long id, String name, String phone, String email, String status) {
+    public AcceptChristRequest updateContactedRequest(Long id, String name, String phone, String email, String gender, String status) {
         AcceptChristRequest request = requestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
         
@@ -128,6 +128,10 @@ public class AcceptChristRequestService {
             }
         } else {
             request.setEmail(null);
+        }
+        
+        if (gender != null && !gender.trim().isEmpty()) {
+            request.setGender(gender.trim());
         }
         
         // Status can be updated

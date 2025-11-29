@@ -26,6 +26,8 @@ public class AcceptChristRequest {
     @Column(nullable = true) // Email is optional
     private String email;
 
+    private String gender;
+
     @Column(length = 1000)
     private String comment;
 
