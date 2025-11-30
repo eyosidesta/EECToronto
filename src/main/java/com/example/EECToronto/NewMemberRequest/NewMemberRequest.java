@@ -39,3 +39,4 @@ public class NewMemberRequest {
     private Date requestDate = new Date();
 }
 
+

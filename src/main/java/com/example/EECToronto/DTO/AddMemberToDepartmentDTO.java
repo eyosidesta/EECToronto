@@ -17,3 +17,4 @@ public class AddMemberToDepartmentDTO {
     private LocalDate joinedDate; // Optional - if null, use today's date
 }
 
+

@@ -14,3 +14,4 @@ public interface AcceptChristRequestRepository extends JpaRepository<AcceptChris
     Optional<AcceptChristRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+

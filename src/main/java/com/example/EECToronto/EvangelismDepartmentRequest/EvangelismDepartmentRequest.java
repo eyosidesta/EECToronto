@@ -39,3 +39,4 @@ public class EvangelismDepartmentRequest {
     private Date requestDate = new Date();
 }
 
+

@@ -14,3 +14,4 @@ public interface EvangelismDepartmentRequestRepository extends JpaRepository<Eva
     Optional<EvangelismDepartmentRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+

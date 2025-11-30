@@ -14,3 +14,4 @@ public interface MediaDepartmentRequestRepository extends JpaRepository<MediaDep
     Optional<MediaDepartmentRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+
