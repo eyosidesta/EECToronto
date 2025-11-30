@@ -12,7 +12,7 @@ public class EmailNotificationService {
     @Autowired
     private JavaMailSender mailSender;
     
-    @Value("${spring.mail.username}")
+    @Value("${GMAIL_USERNAME:}")
     private String fromEmail;
     
     @Value("${app.frontend.url:https://www.geecvancouver.ca}")
