@@ -6,7 +6,7 @@ import com.example.EECToronto.DTO.AuthRequest;
 import com.example.EECToronto.DTO.AuthResponse;
 import com.example.EECToronto.DTO.RegisterRequest;
 import com.example.EECToronto.DTO.Role;
-import com.example.EECToronto.EmailService.EmailService;
+import com.example.EECToronto.EmailService.EmailNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AuthService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final EmailService emailService;
+    private final EmailNotificationService emailNotificationService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
@@ -36,13 +36,13 @@ public class AuthService {
                        AdminRepository adminRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
-                       EmailService emailService,
+                       EmailNotificationService emailNotificationService,
                        PasswordResetTokenRepository passwordResetTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.emailService = emailService;
+        this.emailNotificationService = emailNotificationService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
@@ -111,7 +111,7 @@ public class AuthService {
         
         // Send registration notification email
         try {
-            emailService.sendRegistrationNotification(request.getUsername(), request.getUsername());
+            emailNotificationService.sendRegistrationNotification(request.getUsername(), request.getUsername());
         } catch (Exception e) {
             // Log error but don't fail registration
             log.error("Failed to send registration email: " + e.getMessage());
@@ -274,7 +274,7 @@ public class AuthService {
         passwordResetTokenRepository.save(resetToken);
         
         // Send password reset email
-        emailService.sendPasswordResetEmail(username, token);
+        emailNotificationService.sendPasswordResetEmail(username, token);
         
         return "Password reset email sent successfully";
     }
