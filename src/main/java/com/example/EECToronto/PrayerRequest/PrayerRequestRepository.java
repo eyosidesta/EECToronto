@@ -12,3 +12,4 @@ public interface PrayerRequestRepository extends JpaRepository<PrayerRequest, Lo
     long countByContacted(boolean contacted);
 }
 
+

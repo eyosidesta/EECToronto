@@ -37,3 +37,4 @@ public class ContactMessage {
     private Date requestDate = new Date();
 }
 
+

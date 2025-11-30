@@ -12,3 +12,4 @@ public interface ContactMessageRepository extends JpaRepository<ContactMessage, 
     long countByContacted(boolean contacted);
 }
 
+

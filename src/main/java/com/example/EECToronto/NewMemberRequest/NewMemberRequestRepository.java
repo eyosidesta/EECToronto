@@ -14,3 +14,4 @@ public interface NewMemberRequestRepository extends JpaRepository<NewMemberReque
     Optional<NewMemberRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+

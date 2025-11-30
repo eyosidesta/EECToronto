@@ -14,3 +14,4 @@ public interface ChildrenDepartmentRequestRepository extends JpaRepository<Child
     Optional<ChildrenDepartmentRequest> findByEmailAndContacted(String email, boolean contacted);
 }
 
+

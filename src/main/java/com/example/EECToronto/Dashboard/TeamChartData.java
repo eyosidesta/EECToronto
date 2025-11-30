@@ -12,3 +12,4 @@ public class TeamChartData {
     private Long memberCount;
 }
 
+
