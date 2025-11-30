@@ -60,6 +60,49 @@ public class EventService {
                 }).orElseThrow(() -> new RuntimeException("Event Not Found with id " + id));
     }
 
+    public Events updateEventWithImage(Long id, @ModelAttribute EventRequestDTO dto) throws IOException {
+        return eventRepository.findById(id)
+                .map(existingEvent -> {
+                    // Update basic fields
+                    if (dto.getEventTitle() != null) {
+                        existingEvent.setEventTitle(dto.getEventTitle());
+                    }
+                    if (dto.getEventDescription() != null) {
+                        existingEvent.setEventDescription(dto.getEventDescription());
+                    }
+                    if (dto.getEventStreet() != null) {
+                        existingEvent.setEventStreet(dto.getEventStreet());
+                    }
+                    if (dto.getEventCity() != null) {
+                        existingEvent.setEventCity(dto.getEventCity());
+                    }
+                    if (dto.getEventType() != null) {
+                        existingEvent.setEventType(dto.getEventType());
+                    }
+                    if (dto.getEventDate() != null) {
+                        existingEvent.setEventDate(dto.getEventDate());
+                    }
+
+                    // Handle image
+                    MultipartFile image = dto.getEventImage();
+                    if (image != null && !image.isEmpty()) {
+                        try {
+                            // New image uploaded
+                            String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                            String imageUrl = s3Service.uploadFile(fileName, image.getBytes());
+                            existingEvent.setEventImageUrl(imageUrl);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+                        }
+                    } else if (dto.getEventImageUrl() != null && !dto.getEventImageUrl().trim().isEmpty()) {
+                        // Keep existing image URL if provided
+                        existingEvent.setEventImageUrl(dto.getEventImageUrl());
+                    }
+
+                    return eventRepository.save(existingEvent);
+                }).orElseThrow(() -> new RuntimeException("Event Not Found with id " + id));
+    }
+
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }

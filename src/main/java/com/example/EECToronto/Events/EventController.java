@@ -45,8 +45,8 @@ public class EventController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Events> updateEventPartial(@PathVariable Long id, @RequestBody Events event) {
-        Events updated = eventService.updateEvent(id, event);
+    public ResponseEntity<Events> updateEventPartial(@PathVariable Long id, @ModelAttribute EventRequestDTO eventRequestDTO) throws IOException {
+        Events updated = eventService.updateEventWithImage(id, eventRequestDTO);
         return ResponseEntity.ok(updated);
     }
 

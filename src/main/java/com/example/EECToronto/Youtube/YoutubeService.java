@@ -19,7 +19,7 @@ public class YoutubeService {
     private String apiKey;
 
     private static final String YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search";
-    private static final long CACHE_TTL_MS = 180000; // 3 minutes in milliseconds
+    private static final long CACHE_TTL_MS = 600000; // 10 minutes in milliseconds
 
     // Thread-safe in-memory cache with expiration
     private final Map<String, CacheEntry> cache = new ConcurrentHashMap<>();
@@ -79,7 +79,7 @@ public class YoutubeService {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.toString());
 
-                // Check if there are any live videos
+                // Check if there are any live videos - following the correct response structure
                 JsonNode items = jsonNode.get("items");
                 if (items != null && items.isArray() && items.size() > 0) {
                     // Get the first live video
