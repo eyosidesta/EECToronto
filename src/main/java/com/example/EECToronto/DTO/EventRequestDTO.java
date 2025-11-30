@@ -20,4 +20,5 @@ public class EventRequestDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime eventDate;
     private MultipartFile eventImage;
+    private String eventImageUrl;
 }
