@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/sermons/**").permitAll() // GET only - public sermon access
                         .requestMatchers("/api/sermon-groups/**").permitAll() // GET only - public sermon group access
                         .requestMatchers("/api/events/**").permitAll() // GET only - public event access
+                        .requestMatchers("/api/youtube/**").permitAll() // GET only - public YouTube live status
                         
                         // Admin registration - only SUPER_ADMIN and MASTER_ADMIN
                         .requestMatchers("/api/auth/register").hasAnyRole("SUPER_ADMIN", "MASTER_ADMIN")
