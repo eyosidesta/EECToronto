@@ -6,6 +6,7 @@ import com.example.EECToronto.DTO.AuthRequest;
 import com.example.EECToronto.DTO.AuthResponse;
 import com.example.EECToronto.DTO.RegisterRequest;
 import com.example.EECToronto.DTO.Role;
+import com.example.EECToronto.EmailService.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -25,16 +28,22 @@ public class AuthService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     public AuthService(AuthenticationManager authenticationManager,
                        AdminRepository adminRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtService jwtService) {
+                       JwtService jwtService,
+                       EmailService emailService,
+                       PasswordResetTokenRepository passwordResetTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.emailService = emailService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     public List<Admin> allAdmin() {
@@ -85,14 +94,29 @@ public class AuthService {
             throw new RuntimeException("Username already existed");
         }
 
+        // Validate email format
+        String email = request.getUsername();
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("Invalid email format. Username must be a valid email address.");
+        }
+
         Admin newAdmin = new Admin();
         newAdmin.setName(request.getName());
-        newAdmin.setUsername(request.getUsername());
+        newAdmin.setUsername(request.getUsername()); // Store email as username
         newAdmin.setRole(request.getRole());
         newAdmin.setPassword(passwordEncoder.encode("123456"));
         newAdmin.setPasswordChanged(false);
 
         adminRepository.save(newAdmin);
+        
+        // Send registration notification email
+        try {
+            emailService.sendRegistrationNotification(request.getUsername(), request.getUsername());
+        } catch (Exception e) {
+            // Log error but don't fail registration
+            log.error("Failed to send registration email: " + e.getMessage());
+        }
+        
         return "Admin Registration Successful!";
     }
 
@@ -224,5 +248,77 @@ public class AuthService {
         }
         
         throw new RuntimeException("Unauthorized to change admin role");
+    }
+    
+    public String requestPasswordReset(String username) {
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with this email address"));
+        
+        // Generate reset token
+        String token = UUID.randomUUID().toString();
+        
+        // Create reset token entity
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUsername(username);
+        resetToken.setUsed(false);
+        
+        // Set expiry to 1 hour from now
+        Date expiryDate = new Date(System.currentTimeMillis() + 3600000); // 1 hour
+        resetToken.setExpiryDate(expiryDate);
+        
+        // Delete any existing unused tokens for this user
+        passwordResetTokenRepository.findByUsernameAndUsedFalse(username)
+                .ifPresent(existingToken -> passwordResetTokenRepository.delete(existingToken));
+        
+        passwordResetTokenRepository.save(resetToken);
+        
+        // Send password reset email
+        emailService.sendPasswordResetEmail(username, token);
+        
+        return "Password reset email sent successfully";
+    }
+    
+    public String resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+        
+        // Check if token is expired
+        if (resetToken.getExpiryDate().before(new Date())) {
+            passwordResetTokenRepository.delete(resetToken);
+            throw new RuntimeException("Reset token has expired");
+        }
+        
+        // Check if token is already used
+        if (resetToken.isUsed()) {
+            throw new RuntimeException("Reset token has already been used");
+        }
+        
+        // Find admin and update password
+        Admin admin = adminRepository.findByUsername(resetToken.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        admin.setPassword(passwordEncoder.encode(newPassword));
+        admin.setPasswordChanged(true);
+        adminRepository.save(admin);
+        
+        // Mark token as used
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
+        
+        return "Password reset successfully";
+    }
+    
+    public String validateResetToken(String token) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+        
+        // Check if token is expired
+        if (resetToken.getExpiryDate().before(new Date())) {
+            passwordResetTokenRepository.delete(resetToken);
+            throw new RuntimeException("Reset token has expired");
+        }
+        
+        return "Token is valid";
     }
 }
