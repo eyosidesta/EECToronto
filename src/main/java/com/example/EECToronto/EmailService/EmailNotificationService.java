@@ -27,7 +27,8 @@ public class EmailNotificationService {
             
             String loginUrl = frontendUrl + "/login";
             String emailBody = "Admin from Grace Ethiopian Evangelical Church gave you access to the website.\n\n" +
-                    "Username: " + username + "\n\n" +
+                    "Username: " + username + "\n" +
+                    "Password: " + 123456 + "\n\n" +
                     "Click the following link to get redirected to the login page:\n" +
                     loginUrl + "\n\n" +
                     "Please use your email address as your username to log in.";
@@ -48,7 +49,7 @@ public class EmailNotificationService {
             message.setTo(toEmail);
             message.setSubject("Password Reset - Grace Ethiopian Evangelical Church");
             
-            String resetUrl = frontendUrl + "/reset-password?token=" + resetToken;
+            String resetUrl = frontendUrl + "/forgot-password?token=" + resetToken;
             String emailBody = "You requested a password reset for your account.\n\n" +
                     "Click the following link to reset your password:\n" +
                     resetUrl + "\n\n" +
