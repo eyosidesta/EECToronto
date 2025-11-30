@@ -34,6 +34,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/auth/reset-password").permitAll()
+                        .requestMatchers("/api/auth/validate-reset-token").permitAll()
                         .requestMatchers("/api/prayer-department-requests").permitAll() // POST only - public user submissions
                         .requestMatchers("/api/worship-department-requests").permitAll() // POST only - public user submissions
                         .requestMatchers("/api/family-department-requests").permitAll() // POST only - public user submissions

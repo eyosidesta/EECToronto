@@ -87,4 +87,23 @@ public class AuthController {
         return ResponseEntity.ok(authService.changeAdminRole(adminId, newRole, username));
     }
 
+    // Forgot Password - Public endpoint
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String username) {
+        return ResponseEntity.ok(authService.requestPasswordReset(username));
+    }
+
+    // Reset Password - Public endpoint
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token,
+                                                @RequestParam String newPassword) {
+        return ResponseEntity.ok(authService.resetPassword(token, newPassword));
+    }
+
+    // Validate Reset Token - Public endpoint
+    @GetMapping("/validate-reset-token")
+    public ResponseEntity<String> validateResetToken(@RequestParam String token) {
+        return ResponseEntity.ok(authService.validateResetToken(token));
+    }
+
 }
