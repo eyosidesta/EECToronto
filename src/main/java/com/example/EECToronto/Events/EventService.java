@@ -86,10 +86,14 @@ public class EventService {
                     // Handle image
                     MultipartFile image = dto.getEventImage();
                     if (image != null && !image.isEmpty()) {
-                        // New image uploaded
-                        String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-                        String imageUrl = s3Service.uploadFile(fileName, image.getBytes());
-                        existingEvent.setEventImageUrl(imageUrl);
+                        try {
+                            // New image uploaded
+                            String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                            String imageUrl = s3Service.uploadFile(fileName, image.getBytes());
+                            existingEvent.setEventImageUrl(imageUrl);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+                        }
                     } else if (dto.getEventImageUrl() != null && !dto.getEventImageUrl().trim().isEmpty()) {
                         // Keep existing image URL if provided
                         existingEvent.setEventImageUrl(dto.getEventImageUrl());
