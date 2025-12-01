@@ -10,8 +10,11 @@ import com.example.EECToronto.Teams.TeamsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -159,6 +162,30 @@ public class MembersController {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Failed to delete member: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<?> importMembers(@RequestParam("file") MultipartFile file) {
+        try {
+            if (file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("File is required"));
+            }
+
+            MembersService.ImportResult result = membersService.importMembersFromExcel(file);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Import completed");
+            response.put("successCount", result.getSuccessCount());
+            response.put("skippedCount", result.getSkippedCount());
+            response.put("errorCount", result.getErrors().size());
+            response.put("errors", result.getErrors());
+            
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Failed to import members: " + e.getMessage()));
         }
     }
 
