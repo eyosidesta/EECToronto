@@ -1,5 +1,7 @@
 package com.example.EECToronto.Youtube;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class YoutubeLiveStatusDTO {
     private boolean isLive;
     private String videoId;
@@ -12,6 +14,7 @@ public class YoutubeLiveStatusDTO {
         this.videoId = videoId;
     }
 
+    @JsonProperty("isLive")
     public boolean isLive() {
         return isLive;
     }
