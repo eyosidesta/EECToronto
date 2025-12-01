@@ -150,6 +150,18 @@ public class MembersController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable Long id) {
+        try {
+            membersService.deleteMemberService(id);
+            return ResponseEntity.ok(new SuccessResponse("Member deleted successfully."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Failed to delete member: " + e.getMessage()));
+        }
+    }
+
     private static class ErrorResponse {
         private String message;
         public ErrorResponse(String message) { this.message = message; }
