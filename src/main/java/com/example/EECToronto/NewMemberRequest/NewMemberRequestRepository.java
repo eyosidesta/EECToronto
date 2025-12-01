@@ -15,3 +15,4 @@ public interface NewMemberRequestRepository extends JpaRepository<NewMemberReque
 }
 
 
+

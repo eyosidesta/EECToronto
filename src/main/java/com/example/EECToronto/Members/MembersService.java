@@ -1,5 +1,6 @@
 package com.example.EECToronto.Members;
 
+import com.example.EECToronto.TeamMembers.TeamMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,12 @@ import java.util.Optional;
 @Service
 public class MembersService {
     private final MembersRepository membersRepository;
+    private final TeamMembersRepository teamMembersRepository;
+    
     @Autowired
-    public MembersService(MembersRepository membersRepository) {
+    public MembersService(MembersRepository membersRepository, TeamMembersRepository teamMembersRepository) {
         this.membersRepository = membersRepository;
+        this.teamMembersRepository = teamMembersRepository;
     }
     public List<Members> getAllMembersService() {
         return membersRepository.findAll();
@@ -66,5 +70,16 @@ public class MembersService {
     public Members getMemberById(Long id) {
         return membersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Member not found"));
+    }
+
+    public void deleteMemberService(Long id) {
+        Members member = membersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+        
+        // Delete all TeamMembers records associated with this member
+        teamMembersRepository.findTeamsByMembers(member).forEach(teamMembersRepository::delete);
+        
+        // Delete the member
+        membersRepository.delete(member);
     }
 }
